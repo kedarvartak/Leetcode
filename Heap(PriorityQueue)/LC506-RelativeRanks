@@ -1,0 +1,78 @@
+
+// Leetcode Link: https://leetcode.com/problems/relative-ranks/
+// Leetcode Solution
+
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    vector<string> findRelativeRanks(vector<int>& score) {
+        // Get the size of input array
+        int size = score.size();
+
+        // Create a max heap to store pairs of {score, original_index}
+        // This will automatically sort scores in descending order
+        priority_queue<pair<int, int>> heap;
+
+        // Push each score and its original position into heap
+        // Example: for [10,3,8,9,4]
+        // We push: {10,0}, {3,1}, {8,2}, {9,3}, {4,4}
+        for(int i = 0; i < size; i++){
+            heap.push({score[i], i});
+        } 
+
+        // Create result vector to store ranks
+        vector<string> rank(size);
+        
+        // Start with place = 1 for assigning ranks
+        // 1 = Gold, 2 = Silver, 3 = Bronze, 4 and after = numerical ranks
+        int place = 1;
+        
+        // Process scores from highest to lowest
+        while(!heap.empty()){
+            // Get original index of current highest score
+            // We need this to put rank in correct position
+            int originalIndex = heap.top().second;
+            heap.pop();
+
+            // Assign medals/ranks based on place
+            // Using originalIndex ensures rank goes to correct position
+            if(place == 1){
+                rank[originalIndex] = "Gold Medal";     // Highest score
+            }
+            else if(place == 2){
+                rank[originalIndex] = "Silver Medal";   // Second highest
+            }
+            else if(place == 3){
+                rank[originalIndex] = "Bronze Medal";   // Third highest
+            }
+            else{
+                rank[originalIndex] = to_string(place); // 4th place and beyond
+            }
+            place++;
+        }
+        return rank;
+    }
+};
+
+// Example Walkthrough:
+// For input score = [10, 3, 8, 9, 4]
+// Heap will contain:
+// {10,0}, {9,3}, {8,2}, {4,4}, {3,1}
+// 2. Processing order:
+// {10,0} → rank[0] = "Gold Medal"
+// {9,3} → rank[3] = "Silver Medal"
+// {8,2} → rank[2] = "Bronze Medal"
+// {4,4} → rank[4] = "4"
+// {3,1} → rank[1] = "5"
+// Final result:
+// ["Gold Medal", "5", "Bronze Medal", "Silver Medal", "4"]
+// Each athlete gets their rank in their original position
+
+
+
+// Time Complexity: O(n log n)
+// Space Complexity: O(n)
+
+
